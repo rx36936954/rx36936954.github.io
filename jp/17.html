@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>警告</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #300000 0%,
+            #0b0000 45%,
+            #000000 100%
+        );
+
+    color: #ff2222;
+
+    font-family:
+        "Courier New",
+        "Yu Gothic",
+        "Hiragino Kaku Gothic ProN",
+        monospace;
+
+    overflow-x: hidden;
+}
+
+/* =========================
+   CRT扫描线
+========================= */
+
+body::after {
+    content: "";
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.025) 0px,
+            rgba(255,255,255,0.025) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+
+    z-index: 999;
+}
+
+/* =========================
+   页面容器
+========================= */
+
+.container {
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px 15px;
+}
+
+/* =========================
+   主警告框
+========================= */
+
+.warning {
+    width: min(800px, 95vw);
+
+    padding: 35px;
+
+    text-align: center;
+
+    background: rgba(0,0,0,0.92);
+
+    border: 2px solid #ff1111;
+
+    box-shadow:
+        0 0 15px #ff0000,
+        0 0 40px rgba(255,0,0,.35),
+        inset 0 0 35px rgba(255,0,0,.12);
+
+    animation: warningPulse 1.5s infinite;
+}
+
+/* =========================
+   顶部标签
+========================= */
+
+.label {
+    display: inline-block;
+
+    padding: 6px 25px;
+
+    border: 1px solid #ff2222;
+
+    background: #0b0000;
+
+    font-size: 13px;
+
+    letter-spacing: 5px;
+
+    margin-bottom: 20px;
+}
+
+/* =========================
+   警告图标
+========================= */
+
+.icon {
+    font-size: 70px;
+
+    margin-bottom: 5px;
+
+    animation: shake .12s infinite alternate;
+}
+
+/* =========================
+   主标题
+========================= */
+
+h1 {
+    margin: 0;
+
+    font-size: clamp(38px, 8vw, 72px);
+
+    letter-spacing: 8px;
+
+    color: #ff2222;
+
+    text-shadow:
+        0 0 5px red,
+        0 0 15px red,
+        0 0 35px red;
+
+    animation: glitch 1s infinite;
+}
+
+/* =========================
+   媒体轮播区域 (图片与视频翻页)
+========================= */
+
+.media-box {
+    margin: 30px auto;
+
+    width: min(600px, 100%);
+
+    border: 1px solid #700000;
+
+    background: #050505;
+
+    padding: 8px;
+
+    box-shadow:
+        0 0 20px rgba(255,0,0,.25);
+
+    position: relative;
+}
+
+.media-slider {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.media-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-slide.active {
+    display: flex;
+}
+
+.media-slide img,
+.media-slide video {
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    filter:
+        contrast(1.15)
+        brightness(.75)
+        saturate(.7);
+
+    transition: .3s;
+}
+
+.media-slide img:hover,
+.media-slide video:hover {
+    filter:
+        contrast(1.2)
+        brightness(1)
+        saturate(1);
+}
+
+/* 翻页按钮样式 */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #ff2222;
+    color: #ff2222;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+    transition: 0.2s;
+}
+
+.slider-btn:hover {
+    background: #ff2222;
+    color: #000;
+}
+
+.prev-btn {
+    left: 10px;
+}
+
+.next-btn {
+    right: 10px;
+}
+
+/* =========================
+   系统日志
+========================= */
+
+.terminal {
+    text-align: left;
+
+    margin: 25px auto;
+
+    max-width: 650px;
+
+    padding: 20px;
+
+    background: #020202;
+
+    border: 1px solid #420000;
+
+    color: #cc3333;
+
+    line-height: 1.9;
+
+    font-size: 14px;
+}
+
+.gray {
+    color: #777;
+}
+
+.danger {
+    color: #ff0000;
+
+    font-weight: bold;
+
+    animation: blink .7s infinite;
+}
+
+/* =========================
+   恐吓文字
+========================= */
+
+.message {
+    margin: 30px 0;
+
+    color: #ff3333;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    line-height: 1.8;
+
+    text-shadow:
+        0 0 10px red;
+}
+
+/* =========================
+   倒计时
+========================= */
+
+.countdown {
+    font-size: 55px;
+
+    font-weight: bold;
+
+    margin: 20px;
+
+    color: #ff2222;
+
+    text-shadow:
+        0 0 10px red,
+        0 0 25px red;
+}
+
+/* =========================
+   红色停止按钮
+========================= */
+
+button {
+    display: block;
+
+    width: 180px;
+
+    margin: 0 auto;
+
+    padding: 12px 20px;
+
+    color: #ff3333;
+
+    background: transparent;
+
+    border: 1px solid #ff2222;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    letter-spacing: 2px;
+
+    transition: .25s;
+}
+
+button:hover {
+    background: #ff1111;
+
+    color: #000;
+
+    box-shadow:
+        0 0 25px red;
+}
+
+/* =========================
+   Telegram按钮
+========================= */
+
+.telegram-button {
+    display: block;
+
+    width: 220px;
+
+    margin: 18px auto 0;
+
+    padding: 12px 20px;
+
+    border: 1px solid #0088cc;
+
+    color: #0088cc;
+
+    background: transparent;
+
+    text-decoration: none;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    letter-spacing: 1px;
+
+    transition: .25s;
+}
+
+.telegram-button:hover {
+    background: #0088cc;
+
+    color: #000;
+
+    box-shadow:
+        0 0 15px rgba(0,136,204,.7),
+        0 0 30px rgba(0,136,204,.35);
+}
+
+/* =========================
+   底部文字
+========================= */
+
+.footer {
+    margin-top: 25px;
+
+    color: #555;
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+}
+
+/* =========================
+   动画
+========================= */
+
+@keyframes warningPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 15px #ff0000,
+            inset 0 0 20px rgba(255,0,0,.1);
+    }
+
+    50% {
+        box-shadow:
+            0 0 40px #ff0000,
+            inset 0 0 45px rgba(255,0,0,.2);
+    }
+}
+
+@keyframes shake {
+
+    from {
+        transform: translateX(-2px);
+    }
+
+    to {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes glitch {
+
+    0%,
+    90%,
+    100% {
+        transform: translate(0);
+    }
+
+    92% {
+        transform: translate(-5px, 2px);
+    }
+
+    94% {
+        transform: translate(5px, -2px);
+    }
+
+    96% {
+        transform: translate(-2px, 0);
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: .25;
+    }
+}
+
+/* =========================
+   手机适配
+========================= */
+
+@media (max-width: 600px) {
+
+    .warning {
+        padding: 25px 15px;
+    }
+
+    .terminal {
+        font-size: 12px;
+    }
+
+    .message {
+        font-size: 18px;
+    }
+
+    .countdown {
+        font-size: 40px;
+    }
+
+    .telegram-button {
+        width: 200px;
+    }
+
+    .media-slider {
+        height: 300px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="warning">
+
+        <!-- =========================
+            顶部文字
+        ========================= -->
+
+        <div class="label">
+            SYSTEM SECURITY
+        </div>
+
+
+        <!-- =========================
+            警告图标
+        ========================= -->
+
+        <div class="icon">
+            ⚠
+        </div>
+
+
+        <!-- =========================
+            主标题
+        ========================= -->
+
+        <h1>
+            警告
+        </h1>
+
+
+        <!-- =========================
+            媒体轮播区域 (图片与视频可翻页)
+        ========================= -->
+
+        <div class="media-box">
+            <div class="media-slider">
+                <!-- 第一页：图片 -->
+                <div class="media-slide active">
+                    <img src="jp-17/YOLOO-17-6.jpg" alt="警告画像1">
+                </div>
+                <!-- 第二页：图片 (可根据需要修改路径) -->
+                <div class="media-slide">
+                    <img src="jp-17/YOLOO-17.jpg" alt="警告画像2">
+                </div>
+                <!-- 第三页：视频 (可更换视频文件路径) -->
+                <div class="media-slide">
+                    <video controls muted playsinline>
+                        <source src="jp-17/YOLOO-17.mp4" type="video/mp4">
+                        お使いのブラウザは動画タグに対応していません。
+                    </video>
+                </div>
+            </div>
+
+            <!-- 左右切换按钮 -->
+            <button class="slider-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="slider-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+        </div>
+
+
+        <!-- =========================
+            系统日志
+        ========================= -->
+
+        <div class="terminal">
+
+            <div>
+                <span class="gray">[SYSTEM]</span>
+                私の人生は完全に終わった！！...
+            </div>
+
+            <div>
+                <span class="gray">[SYSTEM]</span>
+                両親に知られたら、どうすればいい？...
+            </div>
+
+            <div>
+                <span class="gray">[SYSTEM]</span>
+                同僚にはどう思われるんだろう？
+            </div>
+
+            <div>
+                <span class="gray">[SYSTEM]</span>
+                誰にも言えない。
+                <span class="danger">
+                    WARNING
+                </span>
+            </div>
+
+            <br>
+
+            <div>
+                <span class="gray">[NOTICE]</span>
+                このページを閉じる前に内容を確認してください。
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+            主要恐吓文字
+        ========================= -->
+
+        <div class="message">
+
+            あなたの連絡先に登録されている情報をすべて取得した。<br>
+
+            両親、配偶者、子ども、そして子どもの担任教師の連絡先も含まれている。
+
+        </div>
+
+
+        <!-- =========================
+            倒计时
+        ========================= -->
+
+        <div
+            class="countdown"
+            id="countdown"
+        >
+            10
+        </div>
+
+
+        <!-- =========================
+            停止按钮
+        ========================= -->
+
+        <button
+            onclick="stopSimulation()"
+        >
+            処理を停止する
+        </button>
+
+
+        <!-- =========================
+            Telegram跳转
+        ========================= -->
+
+        <a
+            href="https://t.me/jpjpjp14"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="telegram-button"
+        >
+            Telegramで確認する
+        </a>
+
+
+        <!-- =========================
+            底部
+        ========================= -->
+
+        <div class="footer">
+            SECURITY SYSTEM · SIMULATION MODE
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   轮播功能逻辑
+========================= */
+
+let currentSlide = 0;
+const slides = document.querySelectorAll('.media-slide');
+
+function changeSlide(direction) {
+    // 切换前暂停当前正在播放的视频
+    const activeVideo = slides[currentSlide].querySelector('video');
+    if (activeVideo) {
+        activeVideo.pause();
+    }
+
+    slides[currentSlide].classList.remove('active');
+    
+    currentSlide = (currentSlide + direction + slides.length) % slides.length;
+    
+    slides[currentSlide].classList.add('active');
+}
+
+
+/* =========================
+   倒计时
+========================= */
+
+let time = 10;
+
+const countdown =
+    document.getElementById("countdown");
+
+const timer = setInterval(() => {
+
+    time--;
+
+    if (time <= 0) {
+
+        clearInterval(timer);
+
+        countdown.textContent = "00";
+
+    } else {
+
+        countdown.textContent =
+            String(time).padStart(2, "0");
+
+    }
+
+}, 1000);
+
+
+/* =========================
+   停止按钮
+========================= */
+
+function stopSimulation() {
+
+    clearInterval(timer);
+
+    countdown.textContent = "停止";
+
+}
+
+</script>
+
+</body>
+</html>
